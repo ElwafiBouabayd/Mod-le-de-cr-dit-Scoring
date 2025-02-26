@@ -152,11 +152,12 @@ def decision_tree_zero_importance(df, id_cols, label, params):
         return zero_fi
     
 def roc_auc(target_list, pred_list):
-        print(roc_auc_score(target_list[0], pred_list[0]))
-        print(roc_auc_score(target_list[1], pred_list[1]))
-        print(roc_auc_score(target_list[2], pred_list[2]))
+    print(roc_auc_score(target_list[0], pred_list[0]))
+    print(roc_auc_score(target_list[1], pred_list[1]))
+    print(roc_auc_score(target_list[2], pred_list[2]))
     
 def roc_auc_curve(target_list, pred_list):
+    
     fpr, tpr, thresholds = roc_curve(target_list[0], pred_list[0])
     fpr_val, tpr_val, thresholds_test = roc_curve(target_list[1], pred_list[1])
     fpr_hold_out, tpr_hold_out, thresholds_hold_out = roc_curve(target_list[2], pred_list[2])
@@ -184,6 +185,7 @@ def roc_auc_curve(target_list, pred_list):
     plt.show()
     
 def pr_auc(target_list, pred_list):
+    
     pr, re, thresholds = precision_recall_curve(target_list[0], pred_list[0])
     pr_val, re_val, thresholds_val = precision_recall_curve(target_list[1], pred_list[1])
     pr_hold_out, re_hold_out, thresholds_hold_out = precision_recall_curve(target_list[2], pred_list[2])
@@ -224,8 +226,8 @@ def score_distribution(target_list, pred_list, data_type_list):
         sub_df = pd.DataFrame({"y_actual": y_actual, "y_predicted": y_predicted})
         
         f, ax = plt.subplots(nrows=1, ncols=1, sharex=False, sharey=False, squeeze=True, figsize=(16, 6))
-        sns.distplot(sub_df[sub_df['y_actual']==1].y_predicted.values, hist=True, kde=True, rug=False, label="Defaulter", ax=ax)
-        sns.distplot(sub_df[sub_df['y_actual']==0].y_predicted.values, hist=True, kde=True, rug=False, label="Non-Defaulter", ax=ax)
+        sns.histplot(sub_df[sub_df['y_actual']==1].y_predicted.values, kde=True, label="Defaulter", ax=ax)
+        sns.histplot(sub_df[sub_df['y_actual']==0].y_predicted.values,  kde=True, label="Non-Defaulter", ax=ax)
         plt.xlabel('Predicted positive class score')
         plt.ylabel('Count')
         plt.title(str(df_type) +' Distribution of predicted score')
@@ -256,7 +258,7 @@ def class_rate(target_list, pred_list, data_type_list):
     def buckets(y_actual, y_predicted, bins):
         df = pd.DataFrame({"y_actual": y_actual, "y_predicted": y_predicted})
         if bins is None:
-            out, bins = pd.qcut(y_predicted, 30, retbins=True)
+            out, bins = pd.qcut(y_predicted, 30, retbins=True, duplicates='drop')
             df['score_bucket'] = pd.cut(df["y_predicted"], bins=bins)#, labels=range(20))
             #df['score_bins'] = bins[0:20]
             return df, bins
